@@ -34,7 +34,7 @@
           <div class="card-body">
             <i class="bi bi-link-45deg fs-2 text-info"></i>
             <h5 class="mt-3 mb-0 fw-semibold">Pencocokan</h5>
-            <p class="fs-4 fw-bold text-dark mb-0">12</p>
+            <p class="fs-4 fw-bold text-dark mb-0">13</p>
           </div>
         </div>
       </div>
