@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
-
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
+
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -14,12 +17,58 @@ Route::get('/register', [RegisterController::class, 'showForm'])->name('register
 Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
 
-use Illuminate\Support\Facades\Auth;
 
-Route::get('/admin/dashboard', function () {
-    $user = Auth::user();
-    return view('admin/dashboard');
+
+//admin Route
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
+    Route::post('/admin/pengguna/store', [AdminController::class, 'storePengguna'])->name('admin.pengguna.store');
+    Route::post('/admin/pengguna/update/{id}', [AdminController::class, 'updatePengguna'])->name('admin.pengguna.update');
+    Route::delete('/admin/pengguna/delete/{id}', [AdminController::class, 'destroyPengguna'])->name('admin.pengguna.delete');
+    Route::get('/admin/laporan-hilang', [AdminController::class, 'laporanHilang'])->name('admin.laporan-hilang');
+    Route::post('/admin/laporan-hilang/store', [AdminController::class, 'storeLaporanHilang'])->name('admin.laporan-hilang.store');
+    Route::post('/admin/laporan-hilang/update/{id}', [AdminController::class, 'updateLaporanHilang'])->name('admin.laporan-hilang.update');
+    Route::delete('/admin/laporan-hilang/delete/{id}', [AdminController::class, 'destroyLaporanHilang'])->name('admin.laporan-hilang.delete');
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::get('/user/dashboard', function () {
     $user = Auth::user();
