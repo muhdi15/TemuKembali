@@ -122,7 +122,7 @@ class AdminController extends Controller
 
         LaporanHilang::create([
             'id_pengguna' => auth()->user()->id_pengguna,
-            'nama_barang' => $request->nama_barang,
+            'nama_barang' => $request->nama_barang,     
             'deskripsi' => $request->deskripsi,
             'lokasi_hilang' => $request->lokasi_hilang,
             'tanggal_hilang' => $request->tanggal_hilang,
