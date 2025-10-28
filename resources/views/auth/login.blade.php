@@ -17,20 +17,28 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: radial-gradient(circle at 10% 10%, #ffe6e6, #590010 90%);
-            overflow: hidden;
+            overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
         }
 
-        /* Background animasi lembut */
+        /* Scrollbar */
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+
+        /* Background animasi */
         .orb {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
             filter: blur(80px);
             opacity: 0.4;
             animation: moveOrb 15s infinite ease-in-out alternate;
+            z-index: 1;
         }
 
         .orb1 { width: 300px; height: 300px; background: #b91c1c; top: 10%; left: 10%; animation-delay: 0s; }
@@ -41,15 +49,24 @@
             100% { transform: translate(30px, -40px); }
         }
 
-        /* Card login */
-        .glass-card {
+        /* Container */
+        .page-container {
             position: relative;
             z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Card login */
+        .glass-card {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 24px;
-            padding: 55px 45px;
+            padding: 45px 35px;
             width: 100%;
             max-width: 440px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.25);
@@ -69,10 +86,11 @@
             flex-direction: column;
             color: #fff;
             margin-bottom: 25px;
+            text-align: center;
         }
 
         .brand-logo img {
-            width: 130px;
+            width: 120px;
             height: auto;
             margin-bottom: 12px;
             filter: drop-shadow(0 0 15px rgba(255, 0, 64, 0.6));
@@ -142,6 +160,24 @@
         .text-muted a:hover {
             text-decoration: underline;
         }
+
+        /* Responsif */
+        @media (max-height: 700px) {
+            .page-container {
+                align-items: flex-start;
+                padding-top: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 30px 25px;
+                border-radius: 20px;
+            }
+            .brand-logo img {
+                width: 90px;
+            }
+        }
     </style>
 </head>
 
@@ -150,57 +186,59 @@
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
 
-    <!-- Card -->
-    <div class="glass-card">
-        <div class="brand-logo">
-            <!-- Logo baru yang bisa dibaca (Flaticon) -->
-            <img src="https://cdn-icons-png.flaticon.com/512/8915/8915931.png" alt="Logo TemuKembali">
-            <h3>TemuKembali</h3>
-            <p class="text-light text-opacity-80 text-sm">Sistem Pelaporan Barang Hilang & Temuan</p>
+    <div class="page-container">
+        <!-- Card -->
+        <div class="glass-card">
+            <div class="brand-logo">
+                <!-- Logo yang sama seperti sebelumnya -->
+                <img src="https://cdn-icons-png.flaticon.com/512/8915/8915931.png" alt="Logo TemuKembali">
+                <h3>TemuKembali</h3>
+                <p class="text-light text-opacity-80 text-sm">Sistem Pelaporan Barang Hilang & Temuan</p>
+            </div>
+
+            @if (session('success'))
+                <div class="alert alert-success text-center">{{ session('success') }}</div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="m-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('login.post') }}" method="POST" class="mt-4">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-person-circle me-1"></i> Username
+                    </label>
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Masukkan username Anda" value="{{ old('username') }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock-fill me-1"></i> Kata Sandi
+                    </label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Masukkan kata sandi" required>
+                </div>
+
+                <button type="submit" class="btn btn-maroon w-100 py-3">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
+                </button>
+
+                <p class="text-center mt-4 text-light text-opacity-80">
+                    Belum punya akun?
+                    <a href="/register" class="fw-semibold">Daftar di sini</a>
+                </p>
+            </form>
         </div>
-
-        @if (session('success'))
-            <div class="alert alert-success text-center">{{ session('success') }}</div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul class="m-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('login.post') }}" method="POST" class="mt-4">
-            @csrf
-
-            <div class="mb-3">
-                <label for="username" class="form-label">
-                    <i class="bi bi-person-circle me-1"></i> Username
-                </label>
-                <input type="text" id="username" name="username" class="form-control"
-                    placeholder="Masukkan username Anda" value="{{ old('username') }}" required>
-            </div>
-
-            <div class="mb-4">
-                <label for="password" class="form-label">
-                    <i class="bi bi-lock-fill me-1"></i> Kata Sandi
-                </label>
-                <input type="password" id="password" name="password" class="form-control"
-                    placeholder="Masukkan kata sandi" required>
-            </div>
-
-            <button type="submit" class="btn btn-maroon w-100 py-3">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
-            </button>
-
-            <p class="text-center mt-4 text-light text-opacity-80">
-                Belum punya akun?
-                <a href="/register" class="fw-semibold">Daftar di sini</a>
-            </p>
-        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
