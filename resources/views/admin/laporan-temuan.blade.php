@@ -1,17 +1,20 @@
 @extends('admin.layout')
 
 @section('title', 'Laporan Temuan')
-@section('page-title', 'Manajemen Laporan Temuan')
+@section('page-title', 'Manajemen Laporan Temuan Barang')
 
 @section('content')
 <div class="container-fluid">
+
+    {{-- ALERT --}}
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-1"></i> {{ session('success') }}
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
+    {{-- CARD --}}
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-header bg-maroon text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Daftar Laporan Temuan</h5>
@@ -19,6 +22,7 @@
                 <i class="bi bi-plus-circle"></i> Tambah Laporan
             </button>
         </div>
+
         <div class="card-body">
             @if($laporan->isEmpty())
                 <p class="text-center text-muted mb-0">Belum ada laporan temuan.</p>
@@ -70,7 +74,7 @@
                             </td>
                         </tr>
 
-                        <!-- Modal Edit -->
+                        {{-- MODAL EDIT --}}
                         <div class="modal fade" id="editModal{{ $data->id_laporan_temuan }}" tabindex="-1">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content border-0 shadow-sm">
@@ -97,13 +101,9 @@
                                                 <div class="mb-3">
                                                     <label>Kategori</label>
                                                     <select name="kategori" class="form-select" required>
-                                                        <option {{ $data->kategori=='Elektronik'?'selected':'' }}>Elektronik</option>
-                                                        <option {{ $data->kategori=='Kendaraan'?'selected':'' }}>Kendaraan</option>
-                                                        <option {{ $data->kategori=='Dokumen'?'selected':'' }}>Dokumen</option>
-                                                        <option {{ $data->kategori=='Pakaian'?'selected':'' }}>Pakaian</option>
-                                                        <option {{ $data->kategori=='Tas'?'selected':'' }}>Tas</option>
-                                                        <option {{ $data->kategori=='Kunci'?'selected':'' }}>Kunci</option>
-                                                        <option {{ $data->kategori=='Lainnya'?'selected':'' }}>Lainnya</option>
+                                                        @foreach(['Elektronik','Kendaraan','Dokumen','Pakaian','Tas','Kunci','Lainnya'] as $kategori)
+                                                            <option {{ $data->kategori == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -115,9 +115,9 @@
                                                 <div class="mb-3">
                                                     <label>Status</label>
                                                     <select name="status" class="form-select">
-                                                        <option value="pending" {{ $data->status=='pending'?'selected':'' }}>Pending</option>
-                                                        <option value="terverifikasi" {{ $data->status=='terverifikasi'?'selected':'' }}>Terverifikasi</option>
-                                                        <option value="ditutup" {{ $data->status=='ditutup'?'selected':'' }}>Ditutup</option>
+                                                        <option value="pending" {{ $data->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                        <option value="terverifikasi" {{ $data->status == 'terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                                                        <option value="ditutup" {{ $data->status == 'ditutup' ? 'selected' : '' }}>Ditutup</option>
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
@@ -128,7 +128,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                            <button class="btn btn-maroon text-white" type="submit">Simpan Perubahan</button>
+                                            <button class="btn btn-maroon text-white" type="submit">Simpan</button>
                                         </div>
                                     </form>
                                 </div>
@@ -143,7 +143,7 @@
     </div>
 </div>
 
-<!-- Modal Tambah -->
+{{-- MODAL TAMBAH --}}
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow-sm">
@@ -170,13 +170,9 @@
                         <div class="mb-3">
                             <label>Kategori</label>
                             <select name="kategori" class="form-select" required>
-                                <option>Elektronik</option>
-                                <option>Kendaraan</option>
-                                <option>Dokumen</option>
-                                <option>Pakaian</option>
-                                <option>Tas</option>
-                                <option>Kunci</option>
-                                <option>Lainnya</option>
+                                @foreach(['Elektronik','Kendaraan','Dokumen','Pakaian','Tas','Kunci','Lainnya'] as $kategori)
+                                    <option>{{ $kategori }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

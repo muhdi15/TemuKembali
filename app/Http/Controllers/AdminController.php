@@ -10,6 +10,7 @@ use App\Models\Pencocokan;
 use App\Models\Notifikasi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -177,7 +178,9 @@ class AdminController extends Controller
     }
 
 
-    //Laporan Temuan
+    // =======================
+    // MANajemen Laporan Temuan Barang
+    // =======================
 
     public function laporanTemuan()
     {
