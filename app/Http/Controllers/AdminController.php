@@ -122,7 +122,7 @@ class AdminController extends Controller
 
         LaporanHilang::create([
             'id_pengguna' => auth()->user()->id_pengguna,
-            'nama_barang' => $request->nama_barang,     
+            'nama_barang' => $request->nama_barang,
             'deskripsi' => $request->deskripsi,
             'lokasi_hilang' => $request->lokasi_hilang,
             'tanggal_hilang' => $request->tanggal_hilang,
@@ -174,5 +174,86 @@ class AdminController extends Controller
         $laporan->delete();
 
         return redirect()->back()->with('success', 'Laporan kehilangan berhasil dihapus.');
+    }
+
+
+    //Laporan Temuan
+
+    public function laporanTemuan()
+    {
+        $laporan = LaporanTemuan::with('pengguna')->orderBy('created_at', 'desc')->get();
+        return view('admin.laporan-temuan', compact('laporan'));
+    }
+
+    public function storeLaporanTemuan(Request $request)
+    {
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'lokasi_temuan' => 'required|string|max:255',
+            'tanggal_temuan' => 'required|date',
+            'kategori' => 'required|string',
+            'foto' => 'nullable|image|max:2048',
+        ]);
+
+        $path = null;
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('laporan_temuan', 'public');
+        }
+
+        LaporanTemuan::create([
+            'id_pengguna' => auth()->user()->id_pengguna,
+            'nama_barang' => $request->nama_barang,
+            'deskripsi' => $request->deskripsi,
+            'lokasi_temuan' => $request->lokasi_temuan,
+            'tanggal_temuan' => $request->tanggal_temuan,
+            'kategori' => $request->kategori,
+            'foto' => $path,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Laporan temuan berhasil ditambahkan.');
+    }
+
+    public function updateLaporanTemuan(Request $request, $id)
+    {
+        $laporan = LaporanTemuan::findOrFail($id);
+
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'lokasi_temuan' => 'required|string|max:255',
+            'tanggal_temuan' => 'required|date',
+            'kategori' => 'required|string',
+            'status' => 'required|string|in:pending,terverifikasi,ditutup',
+            'foto' => 'nullable|image|max:2048',
+        ]);
+
+        $path = $laporan->foto;
+        if ($request->hasFile('foto')) {
+            if ($path) Storage::disk('public')->delete($path);
+            $path = $request->file('foto')->store('laporan_temuan', 'public');
+        }
+
+        $laporan->update([
+            'nama_barang' => $request->nama_barang,
+            'deskripsi' => $request->deskripsi,
+            'lokasi_temuan' => $request->lokasi_temuan,
+            'tanggal_temuan' => $request->tanggal_temuan,
+            'kategori' => $request->kategori,
+            'status' => $request->status,
+            'foto' => $path,
+        ]);
+
+        return redirect()->back()->with('success', 'Laporan temuan berhasil diperbarui.');
+    }
+
+    public function destroyLaporanTemuan($id)
+    {
+        $laporan = LaporanTemuan::findOrFail($id);
+        if ($laporan->foto) Storage::disk('public')->delete($laporan->foto);
+        $laporan->delete();
+
+        return redirect()->back()->with('success', 'Laporan temuan berhasil dihapus.');
     }
 }

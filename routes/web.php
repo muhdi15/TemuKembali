@@ -33,6 +33,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/laporan-hilang/update/{id}', [AdminController::class, 'updateLaporanHilang'])->name('admin.laporan-hilang.update');
     Route::delete('/admin/laporan-hilang/delete/{id}', [AdminController::class, 'destroyLaporanHilang'])->name('admin.laporan-hilang.delete');
 
+
+    Route::get('/admin/laporan-temuan', [AdminController::class, 'laporanTemuan'])->name('admin.laporan-temuan');
+    Route::post('/admin/laporan-temuan/store', [AdminController::class, 'storeLaporanTemuan'])->name('admin.laporan-temuan.store');
+    Route::post('/admin/laporan-temuan/update/{id}', [AdminController::class, 'updateLaporanTemuan'])->name('admin.laporan-temuan.update');
+    Route::delete('/admin/laporan-temuan/delete/{id}', [AdminController::class, 'destroyLaporanTemuan'])->name('admin.laporan-temuan.delete');
 });
 
 
@@ -85,4 +90,3 @@ Route::get('/user/dashboard', function () {
         </form>
     </div>';
 });
-
