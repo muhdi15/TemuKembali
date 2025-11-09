@@ -11,6 +11,7 @@ use App\Models\Notifikasi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -258,5 +259,92 @@ class AdminController extends Controller
         $laporan->delete();
 
         return redirect()->back()->with('success', 'Laporan temuan berhasil dihapus.');
+    }
+
+
+    public function pencocokanIndex()
+    {
+        $laporanHilang = LaporanHilang::all();
+        $laporanTemuan = LaporanTemuan::all();
+        $pencocokanManual = Pencocokan::with(['laporanHilang', 'laporanTemuan'])->latest()->get();
+
+        // Pencocokan Otomatis
+        $rekomendasi = [];
+        foreach ($laporanHilang as $hilang) {
+            foreach ($laporanTemuan as $temuan) {
+                $skor = $this->hitungKecocokan($hilang, $temuan);
+                if ($skor >= 60) {
+                    $rekomendasi[] = [
+                        'hilang' => $hilang,
+                        'temuan' => $temuan,
+                        'skor' => round($skor, 1)
+                    ];
+                }
+            }
+        }
+
+        return view('admin.pencocokan.index', compact('rekomendasi', 'pencocokanManual', 'laporanHilang', 'laporanTemuan'));
+    }
+
+    private function hitungKecocokan($hilang, $temuan)
+    {
+        similar_text(strtolower($hilang->nama_barang), strtolower($temuan->nama_barang), $skorNama);
+        $skorKategori = $hilang->kategori == $temuan->kategori ? 100 : 0;
+        similar_text(strtolower($hilang->lokasi_hilang), strtolower($temuan->lokasi_temuan), $skorLokasi);
+        $selisihHari = abs(strtotime($hilang->tanggal_hilang) - strtotime($temuan->tanggal_temuan)) / 86400;
+        $skorTanggal = max(0, 100 - ($selisihHari * 10));
+
+        return ($skorNama * 0.45) + ($skorKategori * 0.25) + ($skorLokasi * 0.2) + ($skorTanggal * 0.1);
+    }
+
+    public function pencocokanSimpan(Request $request)
+    {
+        $request->validate([
+            'id_laporan_hilang' => 'required|exists:laporan_hilang,id_laporan_hilang',
+            'id_laporan_temuan' => 'required|exists:laporan_temuan,id_laporan_temuan',
+            'hasil_pencocokan' => 'required|in:cocok,tidak',
+        ]);
+
+        Pencocokan::updateOrCreate(
+            [
+                'id_laporan_hilang' => $request->id_laporan_hilang,
+                'id_laporan_temuan' => $request->id_laporan_temuan,
+            ],
+            [
+                'hasil_pencocokan' => $request->hasil_pencocokan,
+                'status' => 'belum_dikonfirmasi',
+                'tanggal_pencocokan' => Carbon::now(),
+            ]
+        );
+
+        return back()->with('success', 'Data pencocokan berhasil disimpan!');
+    }
+
+    public function pencocokanDetail($idHilang, $idTemuan)
+    {
+        $hilang = LaporanHilang::findOrFail($idHilang);
+        $temuan = LaporanTemuan::findOrFail($idTemuan);
+        $skor = $this->hitungKecocokan($hilang, $temuan);
+
+        $pencocokan = Pencocokan::where('id_laporan_hilang', $idHilang)
+            ->where('id_laporan_temuan', $idTemuan)
+            ->first();
+
+        return view('admin.pencocokan.detail', compact('hilang', 'temuan', 'skor', 'pencocokan'));
+    }
+
+    public function pencocokanKonfirmasi($id)
+    {
+        $pencocokan = Pencocokan::findOrFail($id);
+        $pencocokan->status = 'selesai';
+        $pencocokan->save();
+
+        return back()->with('success', 'Pencocokan telah dikonfirmasi sebagai selesai (barang dikembalikan ke pemilik).');
+    }
+
+    public function pencocokanHapus($id)
+    {
+        Pencocokan::findOrFail($id)->delete();
+        return back()->with('success', 'Data pencocokan berhasil dihapus!');
     }
 }

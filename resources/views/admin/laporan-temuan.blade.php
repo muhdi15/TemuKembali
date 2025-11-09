@@ -32,6 +32,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
+                            <th>Nama Penemu</th>
                             <th>Nama Barang</th>
                             <th>Kategori</th>
                             <th>Lokasi Temuan</th>
@@ -45,6 +46,7 @@
                         @foreach ($laporan as $i => $data)
                         <tr>
                             <td>{{ $i + 1 }}</td>
+                            <td>{{ $data->pengguna->nama}}</td>
                             <td>{{ $data->nama_barang }}</td>
                             <td>{{ $data->kategori }}</td>
                             <td>{{ $data->lokasi_temuan }}</td>

@@ -66,6 +66,7 @@ return new class extends Migration
             $table->foreign('id_laporan_hilang')->references('id_laporan_hilang')->on('laporan_hilang')->onDelete('cascade');
             $table->foreign('id_laporan_temuan')->references('id_laporan_temuan')->on('laporan_temuan')->onDelete('cascade');
             $table->enum('hasil_pencocokan', ['cocok', 'tidak'])->default('tidak');
+            $table->enum('status', ['belum_dikonfirmasi', 'selesai'])->default('belum_dikonfirmasi');
             $table->date('tanggal_pencocokan')->useCurrent();
             $table->timestamps();
         });

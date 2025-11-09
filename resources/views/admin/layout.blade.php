@@ -128,8 +128,6 @@
             <li><a href="{{ url('/admin/laporan-hilang') }}" class="nav-link {{ Request::is('admin/laporan-hilang*') ? 'active' : '' }}"><i class="bi bi-exclamation-triangle"></i><span>Laporan Kehilangan</span></a></li>
             <li><a href="{{ url('/admin/laporan-temuan') }}" class="nav-link {{ Request::is('admin/laporan-temuan*') ? 'active' : '' }}"><i class="bi bi-box-seam"></i><span>Laporan Temuan</span></a></li>
             <li><a href="{{ url('/admin/pencocokan') }}" class="nav-link {{ Request::is('admin/pencocokan*') ? 'active' : '' }}"><i class="bi bi-link-45deg"></i><span>Pencocokan Data</span></a></li>
-            <li><a href="{{ url('/admin/notifikasi') }}" class="nav-link {{ Request::is('admin/notifikasi*') ? 'active' : '' }}"><i class="bi bi-bell"></i><span>Notifikasi</span></a></li>
-            <li><a href="{{ url('/admin/laporan') }}" class="nav-link {{ Request::is('admin/laporan*') ? 'active' : '' }}"><i class="bi bi-bar-chart"></i><span>Laporan & Statistik</span></a></li>
         </ul>
         <hr>
         <a href="{{ route('logout') }}" class="nav-link text-light"

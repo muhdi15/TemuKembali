@@ -39,6 +39,12 @@ Route::middleware('role:admin')->group(function () {
     Route::post('/admin/laporan-temuan/store', [AdminController::class, 'storeLaporanTemuan'])->name('admin.laporan-temuan.store');
     Route::post('/admin/laporan-temuan/update/{id}', [AdminController::class, 'updateLaporanTemuan'])->name('admin.laporan-temuan.update');
     Route::delete('/admin/laporan-temuan/delete/{id}', [AdminController::class, 'destroyLaporanTemuan'])->name('admin.laporan-temuan.delete');
+
+    Route::get('/admin/pencocokan', [AdminController::class, 'pencocokanIndex'])->name('admin.pencocokan');
+    Route::post('/admin/pencocokan/simpan', [AdminController::class, 'pencocokanSimpan'])->name('admin.pencocokan.simpan');
+    Route::get('/admin/pencocokan/detail/{idHilang}/{idTemuan}', [AdminController::class, 'pencocokanDetail'])->name('admin.pencocokan.detail');
+    Route::post('/admin/pencocokan/konfirmasi/{id}', [AdminController::class, 'pencocokanKonfirmasi'])->name('admin.pencocokan.konfirmasi');
+    Route::delete('/admin/pencocokan/hapus/{id}', [AdminController::class, 'pencocokanHapus'])->name('admin.pencocokan.hapus');
 });
 
 // ===============
