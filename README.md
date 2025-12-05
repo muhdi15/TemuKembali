@@ -48,10 +48,15 @@ Edit file .env dan ubah konfigurasi database agar menggunakan MySQL.
 Contoh konfigurasi:
 
 DB_CONNECTION=mysql
+
 DB_HOST=127.0.0.1
+
 DB_PORT=3306
+
 DB_DATABASE=temu_kembali
+
 DB_USERNAME=root
+
 DB_PASSWORD=
 
 > Sesuaikan DB_DATABASE, DB_USERNAME, dan DB_PASSWORD dengan konfigurasi MySQL Anda.
